@@ -64,7 +64,7 @@ def printQuestion03(ip, subnetAHostCount):
     print("\nSubnet A has {} hosts, so it will need at least {} addresses (for the subnet ID and broadcast address).".format(subnetAHostCount,subnetAAddressesNeeded ))
     numberOfBitsRaw = math.log2(subnetAAddressesNeeded)
     numberOfBitsNeeded = math.ceil(numberOfBitsRaw)
-    print("The least number of bits that satisfy this is {}".format(numberOfBitsNeeded))
+    print("The least number of bits that satisfy this is {}.".format(numberOfBitsNeeded))
     print("\tThis is because log₂({}) = {}, which means we actually need {} bits.".format(subnetAAddressesNeeded, numberOfBitsRaw, numberOfBitsNeeded))
 
 def printQuestion04(ip, subnetAHostCount):
