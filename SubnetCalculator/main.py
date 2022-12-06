@@ -12,12 +12,12 @@ def pickRandomIP():
     hostBits = choice([i for i in range(23,26)])
 
     #debugging
-    ip.clear()
-    ip.append(33)
-    ip.append(47)
-    ip.append(110)
-    ip.append(0)
-    ip.append(25)
+    # ip.clear()
+    # ip.append(33)
+    # ip.append(47)
+    # ip.append(110)
+    # ip.append(0)
+    # ip.append(25)
 
     ip.append(hostBits)
     return ip
