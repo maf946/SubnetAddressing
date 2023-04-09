@@ -1,93 +1,232 @@
+import ipaddress
 import math
+from ipaddress import IPv4Network, IPv4Address
+from random import getrandbits
+from random import choice
+import random
 
-def superscript(n):
-    return "".join(["⁰¹²³⁴⁵⁶⁷⁸⁹"[ord(c)-ord('0')] for c in str(n)])
+#Function: Super long and probably not very intuitive to read function that ensures that subnet sizes are correct and prints their values
+def manGenSubSize(subnetInput, thisDict):
+    # For A
+    subnetAAddressesNeededA = int(thisDict["A"]) + 2
+    numberOfBitsRawA = math.log2(subnetAAddressesNeededA)
+    numberOfBitsNeededA = math.ceil(numberOfBitsRawA)
+    # For B
+    subnetAAddressesNeededB = int(thisDict["B"]) + 2
+    numberOfBitsRawB = math.log2(subnetAAddressesNeededB)
+    numberOfBitsNeededB = math.ceil(numberOfBitsRawB)
 
-def pickRandomIP():
-    from random import choice
-    ip = []
-    for i in range(0,3):
-        ip.append(choice([i for i in range(1,223)]))
-    ip.append(0)
-    hostBits = choice([i for i in range(23,26)])
+    # Calculate number of bits needed
+    addresssesAssignedA = 2 ** numberOfBitsNeededA
+    addresssesAssignedB = 2 ** numberOfBitsNeededB
 
-    #debugging
-    # ip.clear()
-    # ip.append(33)
-    # ip.append(47)
-    # ip.append(110)
-    # ip.append(0)
-    # ip.append(25)
+    totalAddresses = addresssesAssignedA + addresssesAssignedB
 
-    ip.append(hostBits)
-    return ip
+    if (subnetInput == "3"):
+        # For C
+        subnetAAddressesNeededC = int(thisDict["C"]) + 2
+        numberOfBitsRawC = math.log2(subnetAAddressesNeededC)
+        numberOfBitsNeededC = math.ceil(numberOfBitsRawC)
+        addresssesAssignedC = 2 ** numberOfBitsNeededC
+        totalAddresses = addresssesAssignedA + addresssesAssignedB + addresssesAssignedC
 
-def returnIP(ip):
-    theIP = ("{}.{}.{}.{}/{}".format(ip[0], ip[1], ip[2], ip[3], ip[4]))
-    return theIP
 
-def pickRandomHostCounts(numberOfSubnets):
-    from random import choice
-    hostCounts = []
-    for i in range(0, numberOfSubnets):
-        hostCounts.append(choice([i for i in range(10, 150)]))
-    return hostCounts
 
-def printQuestion01(ip):
-    print("\n## Question 1: Is the address space public or private?")
-    private = False
-    if (ip[0] == 10):
-        private = True
-    elif (ip[0] == 172 & ip[1] >=16 & ip[1] <= 31):
-        private = True
-    elif (ip[0] == 192 & ip[1] == 168):
-        private = True
+    if (int(totalAddresses) < intNumOfPossibleHosts):
+        #First check for duplicates
+        if(thisDict["A"] == thisDict["B"]):
+            if (strSubnetGenerationChoice == "y" or strSubnetGenerationChoice == "Y"):
+                print("\nContains duplicates, try again")
+            if(subnetInput == "3"):
+                return -1, numberOfBitsNeededA, numberOfBitsNeededB, numberOfBitsNeededC
+            return -1, numberOfBitsNeededA, numberOfBitsNeededB
+        if(subnetInput == "3"):
+            if (thisDict["A"] == thisDict["C"] or thisDict["B"] == thisDict["C"]):
+                if (strSubnetGenerationChoice == "y" or strSubnetGenerationChoice == "Y"):
+                    print("\nContains duplicates, try again")
+                return -1, numberOfBitsNeededA, numberOfBitsNeededB, numberOfBitsNeededC
 
-    if (private):
-        print("\nThe address space is private, because it is in one of the three defined private IP address ranges")
+
+        #Print subnet information
+        print(
+            "\nSubnet A has {} hosts, so it will need at least {} addresses (for the subnet ID and broadcast address).".format(
+                int(thisDict["A"]), subnetAAddressesNeededA))
+        print("The least number of bits that satisfy this is {}.".format(numberOfBitsNeededA))
+        print("This is because log₂({}) = {}, which means we actually need {} bits.".format(
+            subnetAAddressesNeededA, numberOfBitsRawA, numberOfBitsNeededA))
+
+        print(
+            "\nSubnet B has {} hosts, so it will need at least {} addresses (for the subnet ID and broadcast address).".format(
+                int(thisDict["B"]), subnetAAddressesNeededB))
+        print("The least number of bits that satisfy this is {}.".format(numberOfBitsNeededB))
+        print("This is because log₂({}) = {}, which means we actually need {} bits.".format(
+            subnetAAddressesNeededB,
+            numberOfBitsRawB,
+            numberOfBitsNeededB))
+        if(subnetInput == "3"):
+            print(
+                "\nSubnet C has {} hosts, so it will need at least {} addresses (for the subnet ID and broadcast address).".format(
+                    int(thisDict["C"]), subnetAAddressesNeededC))
+            print("The least number of bits that satisfy this is {}.".format(numberOfBitsNeededC))
+            print("This is because log₂({}) = {}, which means we actually need {} bits.".format(
+                subnetAAddressesNeededC,
+                numberOfBitsRawC,
+                numberOfBitsNeededC))
+            return 1, numberOfBitsNeededA, numberOfBitsNeededB, numberOfBitsNeededC
+        return 1, numberOfBitsNeededA, numberOfBitsNeededB
     else:
-        print("\nThe address space is public, beacuse it is not in one of the three defined private IP address ranges")
-
-def printQuestion02(ip):
-    print("\n## Question 2: How many hosts can there be in this address space?")
-    hostBits = 32 - ip[4]
-    numHosts = 2 ** hostBits - 2
-    print("\nThe number of hosts is {}.".format(numHosts))
-    print("The maximum number of hosts is always equal to 2ˣ - 2, which here evaluates to 2{} - 2 = {}".format(superscript(str(hostBits)), numHosts))
-    print("x is determined by subtracting the number of subnet bits from 32, which here evalutes to 32 - {} = {}".format(ip[4], hostBits))
-    print("\nThe reason we have to subtract 2 from the final number is because there are always 2 addresses allocated")
-    print("for each address block: the subnet ID (the first address) and the broadcast address (the last address).")
-
-def printQuestion03(ip, subnetAHostCount):
-    print("\n## Question 3: What is the subnet address of subnet A? (CIDR notation)")
-    subnetAAddressesNeeded = subnetAHostCount + 2
-    print("\nSubnet A has {} hosts, so it will need at least {} addresses (for the subnet ID and broadcast address).".format(subnetAHostCount,subnetAAddressesNeeded ))
-    numberOfBitsRaw = math.log2(subnetAAddressesNeeded)
-    numberOfBitsNeeded = math.ceil(numberOfBitsRaw)
-    print("The least number of bits that satisfy this is {}.".format(numberOfBitsNeeded))
-    print("\tThis is because log₂({}) = {}, which means we actually need {} bits.".format(subnetAAddressesNeeded, numberOfBitsRaw, numberOfBitsNeeded))
-
-def printQuestion04(ip, subnetAHostCount):
-    print("\n## Question 4: What is the broadcast address of subnet A?")
-    subnetABroadcastAddress = 255
-    print("\nThe broadcast address of subnet A ({}) is {}.{}.{}.{}/{}, because it is the last address in the IP range.".format(returnIP(ip), ip[0], ip[1], ip[2], subnetABroadcastAddress, ip[4]))
-
-if __name__ == '__main__':
-    ip = pickRandomIP()
-    hostCounts = pickRandomHostCounts(2)
-    subnetAHostCount = hostCounts[0]
-    subnetBHostCount = hostCounts[1]
-    print("Consider a router and two attached subnets, A and B.")
-    print("Subnet A contains {} hosts.".format(subnetAHostCount))
-    print("Subnet B contains {} hosts.".format(subnetBHostCount))
-    ## TODO: don't always say 24
-    print("The subnets share the 24 high-order bits of the address space: {}.{}.{}.{}/{}".format(ip[0], ip[1], ip[2], ip[3], ip[4]))
-    print("Assign subnet addresses to each of the subnets(A and B) so that the amount of address space assigned is minimal, " +
-    "\nand at the same time leaving the largest possible contiguous address space available for assignment if a new subnet were to be added.")
-    printQuestion01(ip)
-    printQuestion02(ip)
-    printQuestion03(ip,subnetAHostCount)
-    printQuestion04(ip, subnetAHostCount)
+        if(strSubnetGenerationChoice == "y" or strSubnetGenerationChoice == "Y"):
+            print("\nToo large, try again")
+        if(subnetInput == "3"):
+            return -1, numberOfBitsNeededA, numberOfBitsNeededB, numberOfBitsNeededC
+        else:
+            return -1, numberOfBitsNeededA, numberOfBitsNeededB
 
 
 
+##Start of Program
+#Part 1- Private or Public IP generation
+
+intInput = input("IP address selection: Press enter to continue with public address (2 for private address):")
+
+if (intInput == "2"):
+    print("Private address: ", end='')
+    while True:
+        addr = IPv4Address(getrandbits(32))
+        if (addr.is_private):
+            octets = addr.exploded.split(".")
+            if (octets[0] == "10"):
+                break
+            elif (octets[0] == "172"):
+                if (octets[1] >= "16" and octets[1] <= "31"):
+                    break
+            elif (octets[0] == "192"):
+                if (octets[1] == "168"):
+                    break
+
+
+else:
+    print("Public address: ", end='')
+    addr = IPv4Address(getrandbits(32))
+    while True:
+        if(addr.is_global):
+            break
+
+print(addr)
+
+#Part 2- Number of Subnets
+subnetInput = input("Subnet selection: Press enter to continue with 2 subnets (3 for 3 subnets): ")
+#creates placeholder values for subnet sizes
+if (subnetInput == "3"):
+    thisDict = {
+        "A": 1,
+        "B": 2,
+        "C": 3
+    }
+else:
+    thisDict = {
+        "A": 1,
+        "B": 2
+    }
+    subnetInput = "2"
+
+#Part 3- Prefix Size
+intPrefix = input("Prefix Size: How large do you want the prefix to be 23-27? (default: random): ")
+
+if(intPrefix >= "23" and intPrefix <= "27"):
+    intPrefix = intPrefix
+else:
+    intPrefix = random.randint(23, 27)
+
+#Part 4- Number of Possible Hosts
+intNumOfPossibleHosts = (2 ** (32 - int(intPrefix))) - 2
+print("The maximum possible number of hosts are: " + str(intNumOfPossibleHosts))
+
+#Part 5- Subnet Sizes
+strSubnetGenerationChoice = input("\nSubnet Sizes: Press enter to randomly generate subnet sizes (y for manually input): ")
+
+#Manually generate size for subnets
+if(strSubnetGenerationChoice == "y" or strSubnetGenerationChoice == "Y"):
+    while True:
+        thisDict["A"] = input("Enter the size of subnet A: ")
+        thisDict["B"] = input("Enter the size of subnet B: ")
+        if(subnetInput == "3"):
+            thisDict["C"] = input("Enter the size of subnet C: ")
+
+        #convert values to integers
+        thisDict = {key: int(value) for key, value in thisDict.items()}
+        # Move them to a list so we can sort it more easily
+        dictValues = list(thisDict.values())
+        dictValues.sort(reverse=True)
+        # Add them back to the dictionary
+        thisDict["A"] = dictValues[0]
+        thisDict["B"] = dictValues[1]
+        if (subnetInput == "3"):
+            thisDict["C"] = dictValues[2]
+            val, numberOfBitsNeededA, numberOfBitsNeededB, numberOfBitsNeededC = manGenSubSize(subnetInput, thisDict)
+        else:
+            #Checks if the subnet meets our requirements
+            val, numberOfBitsNeededA, numberOfBitsNeededB = manGenSubSize(subnetInput, thisDict)
+        if(val == 1):
+            break
+
+#Randomly generate size for subnets
+else:
+    while True:
+        #not ideal but it just keep running the loop until it finds an instance where it is the correct size
+        thisDict["A"] = random.randint(1, intNumOfPossibleHosts)
+        thisDict["B"] = random.randint(1, intNumOfPossibleHosts)
+        if (subnetInput == "3"):
+            thisDict["C"] = random.randint(1, intNumOfPossibleHosts)
+
+        #Sort them
+        dictValues = list(thisDict.values())
+        dictValues.sort(reverse=True)
+        # Add them back to the dictionary
+        thisDict["A"] = dictValues[0]
+        thisDict["B"] = dictValues[1]
+        if (subnetInput == "3"):
+            thisDict["C"] = dictValues[2]
+            val, numberOfBitsNeededA, numberOfBitsNeededB, numberOfBitsNeededC = manGenSubSize(subnetInput, thisDict)
+        else:
+            # Checks if the subnet meets our requirements
+            val, numberOfBitsNeededA, numberOfBitsNeededB = manGenSubSize(subnetInput, thisDict)
+        if (val == 1):
+            break
+
+#Part 6- Printing the Subnet
+octets = addr.exploded.split(".")
+print("\nPutting hosts in descending order...\n\n       Example Subnet Addressing")
+print("            " + octets[0] + "." + octets[1] + "." + octets[2] + ".0/" + str(intPrefix))
+print("    A                            B")
+print(str(thisDict["A"]) + " hosts                     " + str(thisDict["B"]) + " hosts")
+if(subnetInput == "3"):
+    print("                  C               ")
+    print("              " + str(thisDict["C"]) + " hosts")
+
+#Part 7
+print("\nCIDR Notation:")
+address = str(octets[0] + "." + octets[1] + "." + octets[2] + ".0")
+ip_address = ipaddress.IPv4Address(address)
+subnetA = ipaddress.IPv4Network((ip_address, (32 - numberOfBitsNeededA)))
+print(f"Subnet A: {subnetA}")
+print(f"Broadcast address: {subnetA.broadcast_address}")
+print(f"First IP of the Subnet A: {subnetA.network_address + 1}")
+print(f"Last IP of the Subnet A: {subnetA.broadcast_address - 1}")
+
+
+ip_addressB = ipaddress.IPv4Address(subnetA.broadcast_address + 1)
+subnetB = ipaddress.IPv4Network((ip_addressB, (32 - numberOfBitsNeededB)))
+print(f"\nSubnet B: {subnetB}")
+print(f"Broadcast address: {subnetB.broadcast_address}")
+print(f"First IP of the Subnet B: {subnetB.network_address + 1}")
+print(f"Last IP of the Subnet B: {subnetB.broadcast_address - 1}")
+
+
+if(subnetInput == "3"):
+    ip_addressC = ipaddress.IPv4Address(subnetB.broadcast_address + 1)
+    subnetC = ipaddress.IPv4Network((ip_addressC, (32 - numberOfBitsNeededC)))
+    print(f"\nSubnet C: {subnetC}")
+    print(f"Broadcast address: {subnetC.broadcast_address}")
+    print(f"First IP of the Subnet C: {subnetC.network_address + 1}")
+    print(f"Last IP of the Subnet C: {subnetC.broadcast_address - 1}")
