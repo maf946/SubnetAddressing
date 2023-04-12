@@ -7,13 +7,9 @@ from manGenSubSize import manGenSubSize
 
 #Options
 boolPublicIPType = False # True for a public IP address; False if you want a private IP address
-intIPType = 1  # 1 for a public IP, 2 for private
-#intSubnetCount = 3  # 2 for 2 subnets, 3 for 3
 intSubnetCount = 3 # 2 for 2 subnets, 3 for 3
 intPrefix = 23  # How large do you want the prefix to be?  (1-27, or -1 for random)
 boolRandomSubnetSizes = True # false to set subnet sizes manually; true if you want them randomly generated
-
-#Function: Super long and probably not very intuitive to read function that ensures that subnet sizes are correct and prints their values
 
 
 ##Start of Program
@@ -106,7 +102,8 @@ else:
                                                                                                boolRandomSubnetSizes)
         else:
             # Checks if the subnet meets our requirements
-            val, numberOfBitsNeededA, numberOfBitsNeededB = manGenSubSize(intSubnetCount, thisDict)
+            val, numberOfBitsNeededA, numberOfBitsNeededB = manGenSubSize(intSubnetCount, thisDict, intNumOfPossibleHosts,
+                                                                                               boolRandomSubnetSizes)
         if (val == 1):
             break
 
