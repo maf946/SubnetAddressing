@@ -53,13 +53,13 @@ if(boolRandomSubnetSizes == False):
         thisDict["A"] = input("Enter the size of subnet A: ")
         numOfBitsRaw = math.log2(int(thisDict["A"]) + 2)
         numOfBitsNeed = math.ceil(numOfBitsRaw)
-        count = 0
-        count = numberOfHostsRemaining(count, numOfBitsNeed, intNumOfPossibleHosts)
+        count = intNumOfPossibleHosts
+        count = numberOfHostsRemaining(count, numOfBitsNeed)
         thisDict["B"] = input("Enter the size of subnet B: ")
         numOfBitsRaw = math.log2(int(thisDict["B"]) + 2)
         numOfBitsNeed = math.ceil(numOfBitsRaw)
         if(intSubnetCount == 3):
-            count = numberOfHostsRemaining(count, numOfBitsNeed, intNumOfPossibleHosts)
+            count = numberOfHostsRemaining(count, numOfBitsNeed)
             thisDict["C"] = input("Enter the size of subnet C: ")
 
         #convert values to integers
