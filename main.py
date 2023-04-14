@@ -3,7 +3,7 @@
 import ipaddress
 import math
 import random
-from ipaddress import IPv4Network, IPv4Address
+from ipaddress import IPv4Address
 from random import getrandbits
 
 #Options - IST 220 students: experiment with these values!
