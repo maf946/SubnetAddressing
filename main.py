@@ -12,6 +12,18 @@ intSubnetCount = 3 # 2 for 2 subnets, 3 for 3
 intPrefix = 24  # How large do you want the prefix to be? Enter an integer between 1 and 27, or anything else for random
 boolRandomSubnetSizes = True # True for randomly generated; False for manual
 
+def ListToFormattedString(alist):
+    # Create a format spec for each item in the input `alist`.
+    # E.g., each item will be right-adjusted, field width=3.
+    format_list = ['{:^20}' for item in alist]
+
+    # Now join the format specs into a single string:
+    # E.g., '{:>3}, {:>3}, {:>3}' if the input list has 3 items.
+    s = '|'.join(format_list)
+
+    # Now unpack the input list `alist` into the format string. Done!
+    return s.format(*alist)
+
 def generateIPAddress(boolPublicIPType):
     if (boolPublicIPType == False):
         print("Private address: ", end='')
@@ -75,32 +87,27 @@ def manGenSubSize(intSubnetCount, thisDict, intNumOfPossibleHosts, boolRandomSub
                     print("\nContains duplicates, try again")
                 return -1, numberOfBitsNeededA, numberOfBitsNeededB, numberOfBitsNeededC
 
-
         #Print subnet information
         print(
             "\nSubnet A has {} hosts, so it will need at least {} addresses (for the subnet ID and broadcast address).".format(
                 int(thisDict["A"]), subnetAAddressesNeededA))
-        print("The smallest number of bits that satisfy this is {}.".format(numberOfBitsNeededA))
-        print("This is because log₂({}) ≈ {}, which rounds up to {} bits.".format(
-            subnetAAddressesNeededA, '{0:.3g}'.format(math.log2(numberOfBitsRawA)), numberOfBitsNeededA))
+        print("The smallest number of bits that satisfy this is {}, because log₂({}) ≈ {:.2f}, which rounds up to {}.".format(numberOfBitsNeededA, subnetAAddressesNeededA,
+            numberOfBitsRawA, numberOfBitsNeededA))
 
         print(
             "\nSubnet B has {} hosts, so it will need at least {} addresses (for the subnet ID and broadcast address).".format(
                 int(thisDict["B"]), subnetAAddressesNeededB))
-        print("The smallest number of bits that satisfy this is {}.".format(numberOfBitsNeededB))
-        print("This is because log₂({}) ≈ {}, which rounds up to {} bits.".format(
-            subnetAAddressesNeededB,
-            '{0:.3g}'.format(math.log2(numberOfBitsRawB)),
-            numberOfBitsNeededB))
+        print("The smallest number of bits that satisfy this is {}, because log₂({}) ≈ {:.2f}, which rounds up to {}.".format(numberOfBitsNeededB, subnetAAddressesNeededB,
+            numberOfBitsRawB, numberOfBitsNeededB))
+
         if(intSubnetCount == 3):
             print(
                 "\nSubnet C has {} hosts, so it will need at least {} addresses (for the subnet ID and broadcast address).".format(
                     int(thisDict["C"]), subnetAAddressesNeededC))
-            print("The smallest number of bits that satisfy this is {}.".format(numberOfBitsNeededC))
-            print("This is because log₂({}) ≈ {}, which rounds up to {} bits.".format(
-                subnetAAddressesNeededC,
-                '{0:.3g}'.format(math.log2(numberOfBitsRawC)),
-                numberOfBitsNeededC))
+            print(
+                "The smallest number of bits that satisfy this is {}, because log₂({}) ≈ {:.2f}, which rounds up to {}.".format(
+                    numberOfBitsNeededC, subnetAAddressesNeededC,
+                    numberOfBitsRawC, numberOfBitsNeededC))
             return 1, numberOfBitsNeededA, numberOfBitsNeededB, numberOfBitsNeededC
         return 1, numberOfBitsNeededA, numberOfBitsNeededB
     else:
@@ -149,7 +156,7 @@ print("The total address space is " + str(addr) + "/" + str(intPrefix))
 
 #Part 4- Number of Possible Hosts
 intNumOfPossibleHosts = (2 ** (32 - intPrefix)) - 2
-print("With a prefix of " + str(intPrefix) + ", the maximum possible number of hosts is " + str(intNumOfPossibleHosts))
+print("With a prefix of " + str(intPrefix) + ", the maximum possible number of hosts is " + str(intNumOfPossibleHosts) + ".")
 
 #Part 5- Subnet Sizes
 
@@ -228,28 +235,31 @@ if(intSubnetCount == 3):
         print("              🖥️ " + str(thisDict["C"]) + " hosts")
 
 #Part 7
-print("\nCIDR Notation:")
+print("Summary\n")
 address = str(octets[0] + "." + octets[1] + "." + octets[2] + ".0")
 ip_address = ipaddress.IPv4Address(address)
 subnetA = ipaddress.IPv4Network((ip_address, (32 - numberOfBitsNeededA)), strict=False)
-print(f"Subnet A: {subnetA}")
-print(f"Broadcast address: {subnetA.broadcast_address}")
-print(f"First IP of the Subnet A: {subnetA.network_address + 1}")
-print(f"Last IP of the Subnet A: {subnetA.broadcast_address - 1}")
-
 
 ip_addressB = ipaddress.IPv4Address(subnetA.broadcast_address + 1)
 subnetB = ipaddress.IPv4Network((ip_addressB, (32 - numberOfBitsNeededB)), strict=False)
-print(f"\nSubnet B: {subnetB}")
-print(f"Broadcast address: {subnetB.broadcast_address}")
-print(f"First IP of the Subnet B: {subnetB.network_address + 1}")
-print(f"Last IP of the Subnet B: {subnetB.broadcast_address - 1}")
 
+header_list = ["Subnet", "Subnet Address", "First Address", "Last Address", "Broadcast Address"]
+print(ListToFormattedString(header_list))
+
+separator_list = ["======", "==============", "=============", "============", "================"]
+print(ListToFormattedString(separator_list))
+
+
+subnetA_list = ["Subnet A", str(subnetA), str(subnetA.network_address + 1), str(subnetA.broadcast_address - 1), str(subnetA.broadcast_address)]
+print(ListToFormattedString(subnetA_list))
+subnetB_list = ["Subnet B", str(subnetB), str(subnetB.network_address + 1), str(subnetB.broadcast_address - 1), str(subnetB.broadcast_address)]
+print(ListToFormattedString(subnetB_list))
 
 if(intSubnetCount == 3):
     ip_addressC = ipaddress.IPv4Address(subnetB.broadcast_address + 1)
     subnetC = ipaddress.IPv4Network((ip_addressC, (32 - numberOfBitsNeededC)), strict=False)
-    print(f"\nSubnet C: {subnetC}")
-    print(f"Broadcast address: {subnetC.broadcast_address}")
-    print(f"First IP of the Subnet C: {subnetC.network_address + 1}")
-    print(f"Last IP of the Subnet C: {subnetC.broadcast_address - 1}")
+    subnetC_list = ["Subnet C", str(subnetC), str(subnetC.network_address + 1), str(subnetC.broadcast_address - 1),
+                    str(subnetC.broadcast_address)]
+    print(ListToFormattedString(subnetC_list))
+
+
