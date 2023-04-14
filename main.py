@@ -11,8 +11,6 @@ from random import getrandbits
 boolPublicIPType = True # True for a public IP address; False if you want a private IP address
 intSubnetCount = 3 # 2 for 2 subnets, 3 for 3
 intPrefix = 24  # How large do you want the prefix to be? Enter an integer between 1 and 27, or anything else for random
-if ((isinstance(intPrefix, int)) != True):
-    intPrefix = -1
 boolRandomSubnetSizes = True # True for randomly generated; False for manual
 
 def generateIPAddress(boolPublicIPType):
@@ -143,7 +141,7 @@ else:
 
 #Part 3- Prefix Size
 
-if not (intPrefix >= 1 and intPrefix <= 27):
+if ((isinstance(intPrefix, int)) != True or intPrefix < 1 or intPrefix > 27):
     intPrefix = random.randint(1, 27)
     print("The random prefix is: " + str(intPrefix))
 
