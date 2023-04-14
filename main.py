@@ -81,25 +81,25 @@ def manGenSubSize(intSubnetCount, thisDict, intNumOfPossibleHosts, boolRandomSub
             "\nSubnet A has {} hosts, so it will need at least {} addresses (for the subnet ID and broadcast address).".format(
                 int(thisDict["A"]), subnetAAddressesNeededA))
         print("The smallest number of bits that satisfy this is {}.".format(numberOfBitsNeededA))
-        print("This is because log₂({}) = {}, which rounds up to {} bits.".format(
-            subnetAAddressesNeededA, numberOfBitsRawA, numberOfBitsNeededA))
+        print("This is because log₂({}) ≈ {}, which rounds up to {} bits.".format(
+            subnetAAddressesNeededA, '{0:.3g}'.format(math.log2(numberOfBitsRawA)), numberOfBitsNeededA))
 
         print(
             "\nSubnet B has {} hosts, so it will need at least {} addresses (for the subnet ID and broadcast address).".format(
                 int(thisDict["B"]), subnetAAddressesNeededB))
         print("The smallest number of bits that satisfy this is {}.".format(numberOfBitsNeededB))
-        print("This is because log₂({}) = {}, which rounds up to {} bits.".format(
+        print("This is because log₂({}) ≈ {}, which rounds up to {} bits.".format(
             subnetAAddressesNeededB,
-            numberOfBitsRawB,
+            '{0:.3g}'.format(math.log2(numberOfBitsRawB)),
             numberOfBitsNeededB))
         if(intSubnetCount == 3):
             print(
                 "\nSubnet C has {} hosts, so it will need at least {} addresses (for the subnet ID and broadcast address).".format(
                     int(thisDict["C"]), subnetAAddressesNeededC))
             print("The smallest number of bits that satisfy this is {}.".format(numberOfBitsNeededC))
-            print("This is because log₂({}) = {}, which rounds up to {} bits.".format(
+            print("This is because log₂({}) ≈ {}, which rounds up to {} bits.".format(
                 subnetAAddressesNeededC,
-                numberOfBitsRawC,
+                '{0:.3g}'.format(math.log2(numberOfBitsRawC)),
                 numberOfBitsNeededC))
             return 1, numberOfBitsNeededA, numberOfBitsNeededB, numberOfBitsNeededC
         return 1, numberOfBitsNeededA, numberOfBitsNeededB
