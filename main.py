@@ -6,7 +6,6 @@ import random
 from ipaddress import IPv4Network, IPv4Address
 from random import getrandbits
 
-
 #Options - IST 220 students: experiment with these values!
 boolPublicIPType = True # True for a public IP address; False if you want a private IP address
 intSubnetCount = 3 # 2 for 2 subnets, 3 for 3
@@ -143,12 +142,14 @@ else:
 
 if ((isinstance(intPrefix, int)) != True or intPrefix < 1 or intPrefix > 27):
     intPrefix = random.randint(1, 27)
-    print("The random prefix is: " + str(intPrefix))
+    print("The random prefix is " + str(intPrefix))
+
+print("The total address space is " + str(addr) + "/" + str(intPrefix))
 
 
 #Part 4- Number of Possible Hosts
 intNumOfPossibleHosts = (2 ** (32 - intPrefix)) - 2
-print("With a prefix of " + str(intPrefix) + ", the maximum possible number of hosts is: " + str(intNumOfPossibleHosts))
+print("With a prefix of " + str(intPrefix) + ", the maximum possible number of hosts is " + str(intNumOfPossibleHosts))
 
 #Part 5- Subnet Sizes
 
@@ -218,13 +219,13 @@ octets = addr.exploded.split(".")
 print("\nPutting hosts in descending order...\n\n       Example Subnet Addressing")
 print("            " + octets[0] + "." + octets[1] + "." + octets[2] + ".0/" + str(intPrefix))
 print("    A                            B")
-print("🖥️"+ str(thisDict["A"]) + " hosts                     🖥️" +  str(thisDict["B"]) + " hosts")
+print("🖥️ "+ str(thisDict["A"]) + " hosts                     🖥️ " +  str(thisDict["B"]) + " hosts")
 if(intSubnetCount == 3):
     print("                  C               ")
     if(thisDict["C"] == 1):
-        print("              🖥️" + str(thisDict["C"]) + " host")
+        print("              🖥️ " + str(thisDict["C"]) + " host")
     else:
-        print("              🖥️" + str(thisDict["C"]) + " hosts")
+        print("              🖥️ " + str(thisDict["C"]) + " hosts")
 
 #Part 7
 print("\nCIDR Notation:")
