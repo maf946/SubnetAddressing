@@ -7,13 +7,13 @@ from ipaddress import IPv4Network, IPv4Address
 from random import getrandbits
 
 
-#Options
+#Options - IST 220 students: experiment with these values!
 boolPublicIPType = True # True for a public IP address; False if you want a private IP address
 intSubnetCount = 3 # 2 for 2 subnets, 3 for 3
-intPrefix = 24  # How large do you want the prefix to be?  (1-27, or anything else for random)
+intPrefix = 24  # How large do you want the prefix to be? Enter an integer between 1 and 27, or anything else for random
 if ((isinstance(intPrefix, int)) != True):
     intPrefix = -1
-boolRandomSubnetSizes = True # false to set subnet sizes manually; true if you want them randomly generated
+boolRandomSubnetSizes = True # True for randomly generated; False for manual
 
 def generateIPAddress(boolPublicIPType):
     if (boolPublicIPType == False):
