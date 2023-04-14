@@ -4,11 +4,14 @@ import random
 from ipaddress import IPv4Network, IPv4Address
 from random import getrandbits
 
+
 #Options
 boolPublicIPType = True # True for a public IP address; False if you want a private IP address
 intSubnetCount = 3 # 2 for 2 subnets, 3 for 3
-intPrefix = 24  # How large do you want the prefix to be?  (1-27, or -1 for random)
-boolRandomSubnetSizes = False # false to set subnet sizes manually; true if you want them randomly generated
+intPrefix = 24  # How large do you want the prefix to be?  (1-27, or anything else for random)
+if ((isinstance(intPrefix, int)) != True):
+    intPrefix = -1
+boolRandomSubnetSizes = True # false to set subnet sizes manually; true if you want them randomly generated
 
 def generateIPAddress(boolPublicIPType):
     if (boolPublicIPType == False):
@@ -215,10 +218,13 @@ octets = addr.exploded.split(".")
 print("\nPutting hosts in descending order...\n\n       Example Subnet Addressing")
 print("            " + octets[0] + "." + octets[1] + "." + octets[2] + ".0/" + str(intPrefix))
 print("    A                            B")
-print(str(thisDict["A"]) + " hosts                     " + str(thisDict["B"]) + " hosts")
+print("🖥️"+ str(thisDict["A"]) + " hosts                     🖥️" +  str(thisDict["B"]) + " hosts")
 if(intSubnetCount == 3):
     print("                  C               ")
-    print("              " + str(thisDict["C"]) + " hosts")
+    if(thisDict["C"] == 1):
+        print("              🖥️" + str(thisDict["C"]) + " host")
+    else:
+        print("              🖥️" + str(thisDict["C"]) + " hosts")
 
 #Part 7
 print("\nCIDR Notation:")
