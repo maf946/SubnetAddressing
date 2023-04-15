@@ -14,11 +14,11 @@ boolRandomSubnetSizes = True # True for randomly generated; False for manual
 
 def ListToFormattedString(alist):
     # Create a format spec for each item in the input `alist`.
-    # E.g., each item will be right-adjusted, field width=3.
+    # E.g., each item will be centered, field width=20.
     format_list = ['{:^20}' for item in alist]
 
     # Now join the format specs into a single string:
-    # E.g., '{:>3}, {:>3}, {:>3}' if the input list has 3 items.
+    # E.g., '{:^20}, {:^20}, {:^20}' if the input list has 3 items.
     s = '|'.join(format_list)
 
     # Now unpack the input list `alist` into the format string. Done!
@@ -40,7 +40,6 @@ def generateIPAddress(boolPublicIPType):
                     if (octets[1] == "168"):
                         break
         return addr
-
     else:
         print("Public address: ", end='')
         addr = IPv4Address(getrandbits(32))
