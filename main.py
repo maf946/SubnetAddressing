@@ -245,7 +245,7 @@ subnetB = ipaddress.IPv4Network((ip_addressB, (32 - numberOfBitsNeededB)), stric
 header_list = ["Subnet", "Subnet Address", "First Address", "Last Address", "Broadcast Address"]
 print(ListToFormattedString(header_list))
 
-separator_list = ["======", "==============", "=============", "============", "================"]
+separator_list = ["======", "==============", "=============", "============", "================="]
 print(ListToFormattedString(separator_list))
 
 
